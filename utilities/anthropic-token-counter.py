@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# This is a token counter
+
 import sys
 from anthropic import Anthropic
 
