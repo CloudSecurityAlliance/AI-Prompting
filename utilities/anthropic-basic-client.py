@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+# This is a hello world client to test your API key, make suire things are working, etc.
+
 import asyncio
 import os
 from anthropic import AsyncAnthropic, HUMAN_PROMPT, AI_PROMPT
