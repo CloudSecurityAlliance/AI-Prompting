@@ -4,6 +4,10 @@ This is broken into directories for various projects using AI prompting. Some of
 
 Most files will be append logs so you can easily view the previous prompts and strategies used.
 
+## Utilities
+
+The utilities assume a system with Python3 and Bash present, so Linux or Mac OS (if you're on WIndows use WSL2/Ubuntu from the Microsoft Store like Kurt does).
+
 ## Tools
 
 * Prompting tool https://promptperfect.jina.ai/
