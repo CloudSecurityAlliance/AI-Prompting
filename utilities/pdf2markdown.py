@@ -32,7 +32,7 @@ if __name__ == "__main__":
     markdown_text = convert_pdf_to_markdown(pdf_path)
 
     # Print or save the markdown text as needed
-    print(markdown_text)
+#    print(markdown_text)
     # Optionally, save to a file
     with open('output.md', 'w') as md_file:
         md_file.write(markdown_text)
