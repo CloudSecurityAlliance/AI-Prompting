@@ -1,0 +1,5 @@
+https://csrc.nist.gov/pubs/ai/100/2/e2023/final
+https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-2e2023.pdf
+https://www.cnn.com/
+https://github.com/cloudsecurityalliance/gsd-database
+
