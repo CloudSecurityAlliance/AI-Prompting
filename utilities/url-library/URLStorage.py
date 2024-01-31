@@ -33,7 +33,7 @@ def download_url(url, domain, extension):
     if extension == 'html':
         command = ["google-chrome", "--no-sandbox", "--crash-dumps-dir=/tmp/www",
                    "--disable-crash-reporter", "--headless", "--disable-gpu",
-                   "--enable-javascript", "--dump-dom", url]
+                   "--enable-javascript", "--disable-3d-apis", "--dump-dom", url]
         with open(file_path, "w") as file:
             subprocess.run(command, stdout=file)
     else:
