@@ -8,26 +8,47 @@ We timestamp when and label how we did the things we do. URLs are passed in to u
 * status (new, downloaded, text_extracted, summarized, 
 * dataURL (anchor tags stripped, GitHub raw rewrite, etc.)
 * SHA256ofURL
-* DOWNLOAD
-* * downloadFilename
-* * downloadDate
-* * downloadMethod
-* TEXT
-* * textFilename
-* * textDate
-* * textMethod
+* CONTENT DOWNLOAD
+  * downloadFilename
+  * downloadDate
+  * downloadMethod
+* CONTENT TEXT
+  * textFilename
+  * textDate
+  * textMethod
 * SUMMARY
-* 
-* summaryClaudeResponse
-* summaryClaudeDate
-* summaryClaudePrompt
-* summaryOpenAIResponse
-* summaryOpenAIDate
-* summaryOpenAIPrompt
+  * CLAUDE
+    * summaryClaudeResponse
+    * summaryClaudeDate
+    * summaryClaudePrompt
+  * OPENAI
+    * summaryOpenAIResponse
+    * summaryOpenAIDate
+    * summaryOpenAIPrompt
+    
+We need to rate limit our summarizations to 1 client, and in general 10,000 tokens/minute.
+
+We also need to rate limit postings to Wordpress since TaxoPress runs which uses OpenAI.
+
+## Summarization
+
+Summarization includes more than just the summary of the text. We also want to:
+
+* Create summary, ideally as lossless as possible (bullet points?)
+* Determine keywords and tags (keywoprds and tags for the summary is potentially lossy)
+* Determine related URLs (e.g. HNN postings with useful links)
+* Determine appropriate audiences (C-level, Technologists, etc.)
+* Determine what kind of content it is (article, blog, paper, etc.)
+* Determine
+
+We then create the output using Markdown format?
 
 ```mermaid
 graph TD;
-    urlList-->urlStatus.csv
-
-
+    URL-->urlStatus.csv
+    urlStatus.csv-->PROCESSER
+    PROCESSER-->content_downloader-->urlStatus.csv
+    PROCESSER-->summarizer_claude-->urlStatus.csv
+    PROCESSER-->summarizer_openai-->urlStatus.csv
+    urlStatus.csv-->Wordpress_UNKNOWN
 ```
