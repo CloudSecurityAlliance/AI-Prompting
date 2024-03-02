@@ -3,6 +3,8 @@
 Work on the URLs is linear (can't summarize it without having the text content, can't get the text content without the original content, etc.). 
 We timestamp when and label how we did the things we do. URLs are passed in to urlStatus.csv which is currently defined as (ALL CAPS ARE IGNORED, JUST LABELS):
 
+## Data
+
 * fullURL
 * addedDate
 * status (new, downloaded, text_extracted, summarized, 
@@ -29,6 +31,12 @@ We timestamp when and label how we did the things we do. URLs are passed in to u
 We need to rate limit our summarizations to 1 client, and in general 10,000 tokens/minute.
 
 We also need to rate limit postings to Wordpress since TaxoPress runs which uses OpenAI.
+
+## Long term Automation
+
+Zapier doesn't support rate limiting easily or locking. n8n sort of does.
+
+One option would be to kick the automation off at a safe interval like every 5 minutes using a crontab/webhook. This would be a max is 288 items a day which should be plenty.
 
 ## Summarization
 
