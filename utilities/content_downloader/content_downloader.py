@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-# TODO: HANDLE CLOUDFLARE ERROR CODE "error code: 1010" where we get it as a text file
-
 import pycurl
 from io import BytesIO
 import magic
@@ -11,8 +9,6 @@ import argparse
 import subprocess  # To call Google Chrome headless mode
 import sys  # To terminate the program if needed
 import urllib.parse  # For parsing the URL and extracting the filename
-
-# TODO: handle special cases like GitHub files by rewriting the URL to raw.githubusercontent.com
 
 class ContentDownloader:
     def __init__(self, url):
@@ -52,7 +48,7 @@ class ContentDownloader:
         c.setopt(c.WRITEDATA, buffer)
         c.setopt(c.CAINFO, self.ca_bundle_path)
         c.perform()
-        
+
         if buffer.tell() == 0:
             print("Error: Downloaded content is 0 bytes. No content fetched.")
             c.close()
@@ -60,6 +56,11 @@ class ContentDownloader:
 
         self.content = buffer.getvalue()
         c.close()
+
+        # Check for "error code: 1010" in the content if it's text/plain
+        if b"error code: 1010" in self.content:
+            print("Blocked by Cloudflare")
+            sys.exit()
 
         # Save the content temporarily to determine its MIME type
         temp_filename = f"{self.filename}.tmp"
