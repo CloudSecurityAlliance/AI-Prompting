@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys
+import os  # Import os module to work with file paths
 from PyPDF2 import PdfReader
 from markdownify import markdownify as md
 
@@ -31,10 +32,11 @@ if __name__ == "__main__":
     pdf_path = sys.argv[1]
     markdown_text = convert_pdf_to_markdown(pdf_path)
 
-    # Print or save the markdown text as needed
-#    print(markdown_text)
-    # Optionally, save to a file
-    with open('output.md', 'w') as md_file:
+    # Derive Markdown filename from the original PDF path
+    md_filename = os.path.splitext(pdf_path)[0] + '.md'
+
+    # Save the markdown text to the new file name
+    with open(md_filename, 'w') as md_file:
         md_file.write(markdown_text)
 
         

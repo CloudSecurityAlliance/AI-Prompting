@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# TODO: HANDLE CLOUDFLARE ERROR CODE "error code: 1010" where we get it as a text file
+
 import pycurl
 from io import BytesIO
 import magic
