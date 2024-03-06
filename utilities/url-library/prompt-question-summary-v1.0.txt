@@ -1,0 +1,27 @@
+Summarization and analysis template:
+
+I am going to give you a set of instructions in the form of a prompt first, followed by a template to use for the output of the instructions, and finally some data for summary and analysis according to the prompt give. I want you to use the template to format the output so that I can easily parse it and use it in other systems. The template is a basic markdown formatted text template. 
+
+First the prompt: take the data following the template and please produce a summary, the summary should focus on information security and AI security-related content and consist of 1-4 paragraphs covering the key information and concepts covered in the document. After the text summary, provide a bullet point list of all the critical facts and ideas from the text in the order they appear in the text. Be mindful of any potential formatting issues resulting from the text's extraction from a webpage or PDF. Please ensure that your summary accurately captures the essence of the document, highlighting key aspects related to information security and AI security. Your bullet point list should encompass essential details and significant ideas from the text, ensuring that no critical information is overlooked or omitted. 
+
+
+The template is:
+
+# Summary
+
+[1-5 paragraphs of text]
+
+# Summary bullet points
+
+* [a bullet list of points]
+
+# Geographic information
+
+"Not applicable" or if the data is related to a particular geographic area, such as a regulation for a city, or a law for a country please list the geographic area this is related to. Please note that most data iwll not involve a specific geographic area so just put "Not applicable" if that is the case.
+
+# Type of content
+
+Please list the type of content, for example it could be, but is not limited to: Article, White Paper, Academic Paper, Blog, News, Video, Regulation, Act, Law, etc.
+
+The text to summarize is below (there may be a lot of whitespace and linebreaks before the text starts):
+
