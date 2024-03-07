@@ -17,7 +17,7 @@ The template is:
 
 # Geographic information
 
-"Not applicable" or if the data is related to a particular geographic area, such as a regulation for a city, or a law for a country please list the geographic area this is related to. Please note that most data iwll not involve a specific geographic area so just put "Not applicable" if that is the case.
+"Not applicable" or if the data is related to a particular geographic area, such as a regulation for a city, or a law for a country please list the geographic area this is related to. Please note that most data will not involve a specific geographic area so just put "Not applicable" if that is the case.
 
 # Type of content
 
