@@ -12,11 +12,25 @@ PDF is much larger than markdown text.
 
 Excel has a 32k character/cell size limit and Google sheets has a 50k chartacter/cell limit. This means we can't reliably put the data from files into the sheet. You will need to get the markdown files from Google Drive or run the downloader yourself.
 
+Sometimes you have to manually open stuff in a real web browser because it's blocking headless chrome.
+
 ## Tools
 
 ### promptperfect-optimizer.py
 
 ./promptperfect-optimizer.py ../data/improved_prompts.csv
+
+### Manual downloads
+
+Link Grabber:
+https://chromewebstore.google.com/detail/link-grabber/caodelkhipncidmoebgbbeemedohcdma
+
+Bulk URL Opener Extension:
+https://chromewebstore.google.com/detail/bulk-url-opener-extension/hgenngnjgfkdggambccohomebieocekm
+
+Save my tabs:
+https://chromewebstore.google.com/detail/save-my-tabs/djadfifncobffjpicnkiegahdiobpaap
+
 
 
 
