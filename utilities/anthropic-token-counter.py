@@ -9,14 +9,17 @@ def read_input():
     if len(sys.argv) > 1:
         filename = sys.argv[1]
         with open(filename, 'r') as file:
-            return file.read()
+            return filename, file.read()
     else:
-        return input("Please paste your text here:\n")
+        return None, input("Please paste your text here:\n")
 
-def sync_tokens(text: str) -> None:
+def sync_tokens(filename: str, text: str) -> None:
     client = Anthropic()
     tokens = client.count_tokens(text)
-    print(f"The text is {tokens} tokens")
+    if filename:
+        print(f"{filename}:{tokens}")
+    else:
+        print(f"{tokens}")
 
-text = read_input()
-sync_tokens(text)
+filename, text = read_input()
+sync_tokens(filename, text)
