@@ -130,13 +130,29 @@ class ContentDownloader:
         self.filename = new_filename  # Update the filename attribute
         print(f"File saved as: {new_filename}")
 
+def process_url(url):
+    downloader = ContentDownloader(url)
+    downloader.fetch_url()
+
+def process_file(file_path):
+    with open(file_path, 'r') as file:
+        urls = file.readlines()
+        for url in urls:
+            url = url.strip()  # Remove leading/trailing whitespace
+            if url:  # Skip empty lines
+                process_url(url)
+
 def main():
     parser = argparse.ArgumentParser(description='Download content, identify its type, and handle HTML by converting it to PDF.')
-    parser.add_argument('--url', required=True, help='URL of the content to download')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--url', help='URL of the content to download')
+    group.add_argument('--file', help='File containing a list of URLs to download')
     args = parser.parse_args()
 
-    downloader = ContentDownloader(args.url)
-    downloader.fetch_url()
+    if args.url:
+        process_url(args.url)
+    elif args.file:
+        process_file(args.file)
 
 if __name__ == "__main__":
     main()
