@@ -11,8 +11,9 @@ import sys  # To terminate the program if needed
 import urllib.parse  # For parsing the URL and extracting the filename
 
 class ContentDownloader:
-    def __init__(self, url):
+    def __init__(self, url, output_format):
         self.url = url
+        self.output_format = output_format
         self.sha256_hash = self._generate_sha256_hash(url)
         self.filename = self.sha256_hash  # Initial filename is just the hash
         self.ca_bundle_path = self.find_ca_bundle([
@@ -72,30 +73,34 @@ class ContentDownloader:
 
         # If HTML, re-fetch as PDF
         if self.mime_type == 'text/html':
-            print("HTML content detected, converting to PDF using headless Chrome...")
+            print(f"HTML content detected, converting to {self.output_format.upper()} using headless Chrome...")
             self.fetch_html_url()
 
     def fetch_html_url(self):
-        """Uses headless Google Chrome to fetch the HTML URL and save it as a PDF."""
-        pdf_filename = f"{self.sha256_hash}.pdf"
-        command = [
-            "google-chrome",
-            "--no-sandbox",
-            "--crash-dumps-dir=/tmp",
-            "--disable-crash-reporter",
-            "--headless",
-            "--disable-gpu",
-            "--print-to-pdf=" + pdf_filename,
-            self.url
-        ]
+        """Uses headless Google Chrome to fetch the HTML URL and save it based on the output format."""
+        if self.output_format == 'pdf':
+            output_filename = f"{self.sha256_hash}.pdf"
+            command = [
+                "google-chrome",
+                "--no-sandbox",
+                "--crash-dumps-dir=/tmp",
+                "--disable-crash-reporter",
+                "--headless",
+                "--disable-gpu",
+                "--print-to-pdf=" + output_filename,
+                self.url
+            ]
+        else:
+            raise ValueError(f"Unsupported output format: {self.output_format}")
+
         try:
             subprocess.run(command, check=True)
-            print(f"HTML page saved as PDF: {pdf_filename}")
+            print(f"HTML page saved as {self.output_format.upper()}: {output_filename}")
             if os.path.exists(self.filename):  # Remove temporary HTML file if exists
                 os.remove(self.filename)
-            self.filename = pdf_filename  # Update the filename to the PDF
+            self.filename = output_filename  # Update the filename to the output file
         except subprocess.CalledProcessError as e:
-            print("Error converting HTML to PDF:", e)
+            print(f"Error converting HTML to {self.output_format.upper()}:", e)
 
     def identify_and_rename_file(self):
         """Identifies the file type and renames the file to include the appropriate extension."""
@@ -130,29 +135,30 @@ class ContentDownloader:
         self.filename = new_filename  # Update the filename attribute
         print(f"File saved as: {new_filename}")
 
-def process_url(url):
-    downloader = ContentDownloader(url)
+def process_url(url, output_format):
+    downloader = ContentDownloader(url, output_format)
     downloader.fetch_url()
 
-def process_file(file_path):
+def process_file(file_path, output_format):
     with open(file_path, 'r') as file:
         urls = file.readlines()
         for url in urls:
             url = url.strip()  # Remove leading/trailing whitespace
             if url:  # Skip empty lines
-                process_url(url)
+                process_url(url, output_format)
 
 def main():
-    parser = argparse.ArgumentParser(description='Download content, identify its type, and handle HTML by converting it to PDF.')
+    parser = argparse.ArgumentParser(description='Download content, identify its type, and handle HTML by converting it to the specified output format.')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--url', help='URL of the content to download')
     group.add_argument('--file', help='File containing a list of URLs to download')
+    parser.add_argument('--output', default='pdf', choices=['pdf'], help='Output format for HTML content (default: pdf)')
     args = parser.parse_args()
 
     if args.url:
-        process_url(args.url)
+        process_url(args.url, args.output)
     elif args.file:
-        process_file(args.file)
+        process_file(args.file, args.output)
 
 if __name__ == "__main__":
     main()
