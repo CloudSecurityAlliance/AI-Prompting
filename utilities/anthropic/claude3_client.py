@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
 
+# TODO: add support for detecting and reporting:
+#
+# model='claude-3-opus-20240229'
+# role='assistant'
+# stop_reason='end_turn'
+# stop_sequence=None
+# type='message'
+# usage=Usage(input_tokens=10, output_tokens=18))
+#
+
 import argparse
 import anthropic
 import os
@@ -33,8 +43,7 @@ class ClaudeClient:
             )
 
             with open(self.output_file, "w") as file:
-# TODO: FIX THIS?
-                file.write(response.text)
+                file.write(response.content[0].text)
 
             print(f"Claude's answer has been written to {self.output_file}")
 
