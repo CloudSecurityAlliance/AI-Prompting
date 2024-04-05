@@ -1,18 +1,19 @@
+#!/usr/bin/env python3
+
 import argparse
 import anthropic
 import os
-from anthropic.api.errors import InvalidRequestError, AuthenticationError, PermissionError, NotFoundError, RateLimitError, APIError, OverloadedError
 
 class ClaudeClient:
-    def __init__(self, api_key, prompt_file, additional_data_file, output_file, model, temperature, max_tokens_to_sample):
+    def __init__(self, api_key, prompt_file, additional_data_file, output_file, model, temperature, max_tokens):
         self.api_key = api_key
         self.prompt_file = prompt_file
         self.additional_data_file = additional_data_file
         self.output_file = output_file
         self.model = model
         self.temperature = temperature
-        self.max_tokens_to_sample = max_tokens_to_sample
-        self.client = anthropic.Client(api_key=self.api_key)
+        self.max_tokens = max_tokens
+        self.client = anthropic.Anthropic(api_key=self.api_key)
 
     def run(self):
         try:
@@ -22,41 +23,45 @@ class ClaudeClient:
             with open(self.additional_data_file, "r") as file:
                 additional_data = file.read().strip()
 
-            response = self.client.completions.create(
+            response = self.client.messages.create(
+                messages=[
+                    {"role": "user", "content": f"{prompt}\n\nAdditional Data: {additional_data}"}
+                ],
+                max_tokens=self.max_tokens,
                 model=self.model,
-                prompt=f"{anthropic.HUMAN_PROMPT} {prompt}\n\nAdditional Data: {additional_data} {anthropic.AI_PROMPT}",
-                max_tokens_to_sample=self.max_tokens_to_sample,
                 temperature=self.temperature,
             )
 
-            answer = response.completion.strip()
-
             with open(self.output_file, "w") as file:
-                file.write(answer)
+# TODO: FIX THIS?
+                file.write(response.text)
 
             print(f"Claude's answer has been written to {self.output_file}")
 
-        except InvalidRequestError as e:
-            print(f"Invalid request error: {str(e)}")
-        except AuthenticationError as e:
-            print(f"Authentication error: {str(e)}")
-        except PermissionError as e:
-            print(f"Permission error: {str(e)}")
-        except NotFoundError as e:
-            print(f"Not found error: {str(e)}")
-        except RateLimitError as e:
-            print(f"Rate limit error: {str(e)}")
-        except APIError as e:
-            print(f"API error: {str(e)}")
-        except OverloadedError as e:
-            print(f"Overloaded error: {str(e)}")
         except Exception as e:
-            print(f"An unexpected error occurred: {str(e)}")
+            if hasattr(e, "status_code"):
+                status_code = e.status_code
+                if status_code == 400:
+                    print("Invalid request error: There was an issue with the format or content of your request.")
+                elif status_code == 401:
+                    print("Authentication error: There's an issue with your API key.")
+                elif status_code == 403:
+                    print("Permission error: Your API key does not have permission to use the specified resource.")
+                elif status_code == 404:
+                    print("Not found error: The requested resource was not found.")
+                elif status_code == 429:
+                    print("Rate limit error: Your account has hit a rate limit.")
+                elif status_code >= 500:
+                    print("Server error: An unexpected error occurred on Anthropic's side.")
+                else:
+                    print(f"An error occurred: {str(e)}")
+            else:
+                print(f"An error occurred: {str(e)}")
 
 def validate_max_tokens(value):
     value = int(value)
     if value < 1 or value > 4096:
-        raise argparse.ArgumentTypeError("Max tokens to sample must be between 1 and 4096")
+        raise argparse.ArgumentTypeError("Max tokens must be between 1 and 4096")
     return value
 
 def validate_model(value):
@@ -72,7 +77,7 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=True, help="The file to write Claude's answer to")
     parser.add_argument("--model", type=validate_model, default="opus", help="The model to use (default: opus, options: opus, sonnet, haiku)")
     parser.add_argument("--temperature", type=float, default=1.0, help="The temperature for sampling (default: 1.0)")
-    parser.add_argument("--max-tokens", type=validate_max_tokens, default=1000, help="Max tokens to sample (default: 1000, range: 1-4096)")
+    parser.add_argument("--max-tokens", type=validate_max_tokens, default=1000, help="Max tokens in the generated response (default: 1000, range: 1-4096)")
 
     args = parser.parse_args()
 
@@ -89,4 +94,3 @@ if __name__ == "__main__":
 
     client = ClaudeClient(api_key, args.prompt, args.data, args.output, model_mapping[args.model], args.temperature, args.max_tokens)
     client.run()
-    

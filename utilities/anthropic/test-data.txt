@@ -1,0 +1,35 @@
+Ending trust in certificates
+ 
+
+Kurt Seifried, kurt@seifried.org, Copyright Kurt Seifried 2001
+
+ 
+
+For a while now I've been writing articles about SSL, outlining various problems, and why SSL in general is a poor solution that should be improved (before we start doing things like online voting, yikes). The whole premise of certificates is that multiple parties trust a central certificate authority (CA), so when Alice wants to talk to Bob they can verify each others certificates through the CA, in theory proving that they are actually taking to the person that they claim to be. This CA has a very important job, especially so with the use of X.509 certificates (currently the most common for SSL, smartcards and so on). Unlike PGP or GnuPG for example where you can have multiple entities sign a certificate (such as your mother, your boss, the post office, etc.) with X.509 you are limited to one only. Because X.509 certificates can only be signed by one entity you ultimately have to place all your trust in the entity that signed it.
+
+Chances are any CA that is setup to sign certificates will sign a lot of certificates, once they have built the infrastructure it essentially costs them nothing to sign certifications. In fact the only major cost for signing a certificate would be verifying that the end party asking for a signed certificate is indeed who they claim to be. Verisign (who owns Thawte, among other companies) now has the majority of the market (the last number is saw was over 95%), and they have made at least one extremely large mistake. In January of this year they issued two certificates to "Microsoft Corporation", unfortunately the person that got these certificates did not work for Microsoft. To quote the security bulletin issued by Microsoft:
+
+The certificates could be used to sign programs, ActiveX controls, Office macros, and other executable content. Of these, signed ActiveX controls and Office macros would pose the greatest risk, because the attack scenarios involving them would be the most straightforward. Both ActiveX controls and Word documents can be delivered via either web pages or HTML mails. ActiveX controls can be automatically invoked via script, and Word documents can be automatically opened via script unless the user has applied the Office Document Open Confirmation Tool.
+
+Now this is a pretty bad situation. But things get worse:
+
+Verisign has revoked the certificates, and they are listed in Verisign’s current Certificate Revocation List (CRL). However, because Verisign’s code-signing certificates do not specify a CRL Distribution Point (CDP), it is not possible for any browser’s CRL-checking mechanism to download the Verisign CRL and use it. Microsoft is developing an update that rectifies this problem. The update package includes a CRL containing the two certificates, and an installable revocation handler that consults the CRL on the local machine, rather than attempting to use the CDP mechanism.
+
+Oh dear. The sad part is even if Verisign had included a CDP field in the certificate it wouldn't have mattered much since Microsoft doesn't support certificate revocation very well yet.
+
+See, certificates sometimes need to be revoked, perhaps your laptop gets stolen, you accidentally expose it, or someone that had access to it is fired and you don't completely trust them. This is supposed to be achieved through a "Certificate Revocation List", basically a list of certificates that have been revoked which is signed by the CA (so an attacker can't issue a fake revocation). Well this is all fine and dandy in theory but there are significant problems:
+
+In each certificate there needs to be a field telling you where to look for the revocation, the CDP, as yet there are no large central repositories available for public use, and only a handful (or less) of vendors that even bother to put the field in their certificates (Baltimore Entrust is the only I know of).
+CA's need to create massive, redundant and extremely secure CDP's (having one server just won't do it). The response time for checking if a certificate is revoked or not needs to be very fast (even if you only check once a day).
+People need to turn on "check for certificate revocation" in their SSL enabled software (web browsers, operating system, email clients, etc.).
+None of these problems can be easily solved, there are hundreds of thousands of certificates floating around with no easy way to find where a certificate's revocation can be found, many of these certificates have reasonably short life span, but not all of them. In future hopefully all vendors will issue certificates with CDP fields, however this hasn't happened yet and isn't likely to happen anytime soon. The CA's then need to build massive infrastructures to run their CDP's and support CRL's properly, however this costs real money, so I doubt any CA's will be doing this soon (if ever). Once the CDP's and CRL's are built and available users then need to use them, turning on "check for certificate revocation" in all their software (it is unlikely vendors will turn this on by default).
+
+Why am I being so pessimistic? Simply put users will not demand these features. CA's will perpetuate the myth that certificates can be trusted and are suitable for use in business transactions, contracts and so on. Most software vendors have not even provided the capabilities, until recently if at all to check for revoked certificates, so even with CA's adding CDP fields it won't help much until people are using software capable of utilizing it. Between software vendors and CA's I don't think the situation is likely to improve anytime soon (if at all).
+
+ 
+
+http://www.baltimore.com/devzone/pki/ - excellent information on PKI, CA"s, CRL's, CDP's, etc.
+
+http://www.counterpane.com/pki-risks.html - Ten risks of PKI
+
+http://www.microsoft.com/technet/security/bulletin/MS01-017.asp - Microsoft's security bulletin
