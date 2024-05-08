@@ -18,3 +18,22 @@ Please see https://github.com/cloudsecurityalliance/CSA-IT-Operations/tree/main/
 * Can we do "lossless" data compression, e.g. summarize text without losing key ideas, words, phrases, tags, etc?
 * Can we reuse old techniques like shingling, sharding, etc to get better results (e.g. translate a documeent in overlapping chunks so the text flows better, especially if ideas flow through several pages and are interweaved)
 * Can we determine the level of knowledge/exerptise an AI model has in some topic? Can it self report?
+
+## External Resources
+
+* [General Prompt Engineering](https://www.promptingguide.ai/)
+
+### Anthropic Claude
+
+* [Prompt engineering](https://docs.anthropic.com/claude/docs/prompt-engineering)
+
+### Google Gemini
+
+* [Introduction to prompting](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/introduction-prompt-design)
+* [Prompt design strategies](https://ai.google.dev/gemini-api/docs/prompting-strategies)
+* [Design text prompts](https://cloud.google.com/vertex-ai/generative-ai/docs/text/text-prompts)
+
+### OpenAIChatGPT
+
+* Docs: [Prompt engineering](https://platform.openai.com/docs/guides/prompt-engineering)
+* Course: [ChatGPT Prompt Engineering for Developers](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/)
